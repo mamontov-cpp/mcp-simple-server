@@ -1,9 +1,8 @@
 package servlets;
 
 
-import accounts.AccountService;
-import accounts.UserProfile;
-import com.google.gson.Gson;
+import dbService.DBException;
+import dbService.DBService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,10 +12,16 @@ import java.io.IOException;
 
 public class SignupServlet extends HttpServlet {
 
-    private final AccountService accountService;
+    private final DBService accountService;
 
-    public SignupServlet(AccountService accountService) {
+    private final Auth auth;
+
+    public SignupServlet(
+            DBService accountService,
+            Auth auth
+    ) {
         this.accountService = accountService;
+        this.auth = auth;
     }
 
     public void doGet(HttpServletRequest request,
@@ -36,11 +41,15 @@ public class SignupServlet extends HttpServlet {
             return;
         }
 
-        UserProfile profile = new UserProfile(login, pass);
-        accountService.addNewUser(profile);
-        accountService.addSession(request.getSession().getId(), profile);
         response.setContentType("text/html;charset=utf-8");
-        response.getWriter().println("Authorized");
-        response.setStatus(HttpServletResponse.SC_OK);
+        try {
+            long id = accountService.addUser(login, pass);
+            auth.authorize(request.getSession().getId(), id);
+            response.getWriter().println("Authorized");
+            response.setStatus(HttpServletResponse.SC_OK);
+        } catch (DBException e) {
+            response.getWriter().println("Unauthorized");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
     }
 }

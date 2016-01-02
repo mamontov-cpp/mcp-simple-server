@@ -1,32 +1,41 @@
 package main;
 
-import accounts.AccountService;
-import accounts.UserProfile;
+
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import servlets.SessionsServlet;
+import servlets.Auth;
 import servlets.SignupServlet;
 import servlets.SigninServlet;
-import servlets.UsersServlet;
+import dbService.DBException;
+import dbService.DBService;
+import dbService.dataSets.UsersDataSet;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        AccountService accountService = new AccountService();
+        DBService dbService = new DBService();
+        Auth auth = new Auth();
+        dbService.printConnectInfo();
 
-        accountService.addNewUser(new UserProfile("admin"));
-        accountService.addNewUser(new UserProfile("test"));
+        /*try {
+            long userId = dbService.addUser("tully", "1111");
+            System.out.println("Added user id: " + userId);
+
+            UsersDataSet dataSet = dbService.getUser(userId);
+            System.out.println("User data set: " + dataSet);
+
+        } catch (DBException e) {
+            e.printStackTrace();
+        }*/
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.addServlet(new ServletHolder(new UsersServlet(accountService)), "/api/v1/users");
-        context.addServlet(new ServletHolder(new SessionsServlet(accountService)), "/api/v1/sessions");
-        context.addServlet(new ServletHolder(new SignupServlet(accountService)), "/signup");
-        context.addServlet(new ServletHolder(new SigninServlet(accountService)), "/signin");
-        context.addServlet(new ServletHolder(new SignupServlet(accountService)), "/signup/");
-        context.addServlet(new ServletHolder(new SigninServlet(accountService)), "/signin/");
+        context.addServlet(new ServletHolder(new SignupServlet(dbService, auth)), "/signup");
+        context.addServlet(new ServletHolder(new SigninServlet(dbService, auth)), "/signin");
+        context.addServlet(new ServletHolder(new SignupServlet(dbService, auth)), "/signup/");
+        context.addServlet(new ServletHolder(new SigninServlet(dbService, auth)), "/signin/");
 
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setResourceBase("public_html");
