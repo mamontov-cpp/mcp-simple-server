@@ -83,5 +83,16 @@
             <artifactId>jetty-webapp</artifactId>
             <version>9.3.0.M1</version>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty.websocket</groupId>
+            <artifactId>websocket-servlet</artifactId>
+            <version>9.3.0.M1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty.websocket</groupId>
+            <artifactId>websocket-server</artifactId>
+            <version>9.3.0.M1</version>
+        </dependency>
+
     </dependencies>
 </project>
