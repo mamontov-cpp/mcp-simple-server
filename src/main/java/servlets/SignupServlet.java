@@ -40,7 +40,7 @@ public class SignupServlet extends HttpServlet {
         accountService.addNewUser(profile);
         accountService.addSession(request.getSession().getId(), profile);
         response.setContentType("text/html;charset=utf-8");
-        response.getWriter().println("Authorized");
+        response.getWriter().println("Authorized: " + profile.getLogin());
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }
