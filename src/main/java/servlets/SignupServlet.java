@@ -45,7 +45,7 @@ public class SignupServlet extends HttpServlet {
         try {
             long id = accountService.addUser(login, pass);
             auth.authorize(request.getSession().getId(), id);
-            response.getWriter().println("Authorized");
+            response.getWriter().println("Authorized: " + login);
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (DBException e) {
             response.getWriter().println("Unauthorized");

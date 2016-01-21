@@ -1,7 +1,9 @@
 package servlets;
 
 
+import dbService.DBException;
 import dbService.DBService;
+import dbService.dataSets.UsersDataSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -44,10 +46,17 @@ public class SigninServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
+        try {
+            UsersDataSet ds = accountService.getUser(id);
 
-        auth.authorize(request.getSession().getId(), id);
-        response.setContentType("text/html;charset=utf-8");
-        response.getWriter().println("Authorized");
-        response.setStatus(HttpServletResponse.SC_OK);
+            auth.authorize(request.getSession().getId(), id);
+            response.setContentType("text/html;charset=utf-8");
+            response.getWriter().println("Authorized: " + ds.getName());
+            response.setStatus(HttpServletResponse.SC_OK);
+        } catch(DBException ex) {
+            response.setContentType("text/html;charset=utf-8");
+            response.getWriter().println("Unauthorized");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        }
     }
 }
