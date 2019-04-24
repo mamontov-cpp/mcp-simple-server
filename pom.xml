@@ -42,7 +42,7 @@
 
 
     <properties>
-        <org.eclipse.jetty.version>9.4.12.v20180830</org.eclipse.jetty.version>
+        <org.eclipse.jetty.version>9.4.17.v20190418</org.eclipse.jetty.version>
         <org.apache.logging.log4j.version>2.2</org.apache.logging.log4j.version>
         <junit.version>4.11</junit.version>
         <org.mockito.version>1.8.4</org.mockito.version>
